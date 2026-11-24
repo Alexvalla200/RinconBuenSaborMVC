@@ -1,49 +1,55 @@
-import { getConnection, sql } from '../utils/db'
+import { getDbPool } from '../utils/db'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { nombre, tipo_id, proteina_id } = body
+  const nombre = typeof body?.nombre === 'string' ? body.nombre.trim() : ''
+  const tipoId = Number(body?.tipo_id)
+  const proteinaId = Number(body?.proteina_id)
 
-  if (!nombre || !tipo_id || !proteina_id) {
-    throw createError({ statusCode: 400, statusMessage: 'Todos los campos son obligatorios' })
+  if (!nombre || !tipoId || !proteinaId) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Todos los campos son obligatorios'
+    })
   }
 
   try {
-    const pool = await getConnection()
+    const pool = getDbPool()
 
-    // Validación: Solo bloquea si existe el mismo nombre con la misma proteína exacta
-    const checkQuery = await pool.request()
-      .input('nombre', sql.NVarChar, nombre.trim())
-      .input('proteina_id', sql.Int, Number(proteina_id))
-      .query('SELECT id FROM Platos WHERE nombre = @nombre AND proteina_id = @proteina_id')
+    const dup = await pool.query(
+      'SELECT id FROM platos WHERE LOWER(nombre) = LOWER($1) AND proteina_id = $2',
+      [nombre, proteinaId]
+    )
 
-    if (checkQuery.recordset.length > 0) {
-      throw createError({ 
-        statusCode: 409, 
-        statusMessage: 'Violación de integridad: Ya existe un plato con ese nombre y esa misma proteína específica.' 
+    if (dup.rows.length > 0) {
+      throw createError({
+        statusCode: 409,
+        statusMessage: '🚨 Error BD: Plato duplicado para esta proteína.'
       })
     }
 
-    // Inserción permitiendo repetir nombres, tipos y grupos si la proteína cambia
-    const insertQuery = await pool.request()
-      .input('nombre', sql.NVarChar, nombre.trim())
-      .input('tipo_id', sql.Int, Number(tipo_id))
-      .input('proteina_id', sql.Int, Number(proteina_id))
-      .query(`
-        INSERT INTO Platos (nombre, tipo_id, proteina_id) 
-        OUTPUT INSERTED.* 
-        VALUES (@nombre, @tipo_id, @proteina_id)
-      `)
+    const inserted = await pool.query(
+      `INSERT INTO platos (nombre, tipo_id, proteina_id)
+       VALUES ($1, $2, $3)
+       RETURNING id, nombre, tipo_id, proteina_id`,
+      [nombre, tipoId, proteinaId]
+    )
 
-    return { success: true, plato: insertQuery.recordset[0] }
-
-  } catch (error: any) {
-    if (error.number === 2627) {
-      throw createError({ statusCode: 409, statusMessage: 'Error BD: Plato duplicado para esta proteína.' })
+    return {
+      success: true,
+      plato: inserted.rows[0]
     }
-    throw createError({ 
-      statusCode: 500, 
-      statusMessage: `Error interno: ${error.message || error}` 
+  } catch (error: any) {
+    if (error.statusCode) throw error
+    if (error.code === '23505') {
+      throw createError({
+        statusCode: 409,
+        statusMessage: '🚨 Error BD: Plato duplicado para esta proteína.'
+      })
+    }
+    throw createError({
+      statusCode: 500,
+      statusMessage: `Error interno: ${error.message || error}`
     })
   }
 })

@@ -1,24 +1,20 @@
-import sql from 'mssql'; // Importación estándar, sin msnodesqlv8
+import pg from 'pg'
 
-const sqlConfig = {
-  user: 'sa', 
-  password: '123456789', // La contraseña que hayas configurado
-  database: 'RinconBuenSabor',
-  server: 'localhost', 
-  port: 1433, // Añade esta línea para forzar el puerto que acabamos de abrir
-  options: {
-    encrypt: true,
-    trustServerCertificate: true
-  }
-};
+const { Pool } = pg
 
-let poolPromise: Promise<sql.ConnectionPool> | null = null;
+const connectionString = process.env.DATABASE_URL
 
-export const getConnection = async () => {
-  if (!poolPromise) {
-    poolPromise = new sql.ConnectionPool(sqlConfig).connect();
-  }
-  return poolPromise;
-};
+const pool = connectionString
+  ? new Pool({
+      connectionString,
+      ssl: process.env.DB_SSL === 'false' ? false : { rejectUnauthorized: false }
+    })
+  : new Pool({
+      host: process.env.DB_HOST || 'localhost',
+      port: Number(process.env.DB_PORT) || 5432,
+      database: process.env.DB_NAME || 'rincon_buen_sabor',
+      user: process.env.DB_USER || 'postgres',
+      password: process.env.DB_PASSWORD || '123456'
+    })
 
-export { sql };
+export const getDbPool = () => pool

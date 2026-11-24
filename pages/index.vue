@@ -1,5 +1,13 @@
 <template>
   <div style="padding: 2rem; font-family: sans-serif; max-width: 800px; margin: auto;">
+    <nav style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid #e5e7eb;">
+  <NuxtLink to="/" style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; background: #2563eb; color: #ffffff; font-weight: 600;">
+     Ingresar Platos
+  </NuxtLink>
+  <NuxtLink to="/generar-menu" style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; background: #f3f4f6; color: #1f2937; font-weight: 600;">
+     Generar Menús
+  </NuxtLink>
+</nav>
     <h2> Ingresar Nuevo Plato</h2>
 
     <!-- Formulario de Registro -->
@@ -90,7 +98,8 @@ const platosList = ref([])
 const categoriasDb = [
   { id: 1, nombre: 'Carnes Rojas' },
   { id: 2, nombre: 'Aves' },
-  { id: 3, nombre: 'Mariscos' }
+  { id: 3, nombre: 'Mariscos' },
+  { id: 4, nombre: 'Especiales' }
 ]
 
 // Proteínas organizadas por categoría de acuerdo a tu base de datos
@@ -106,6 +115,13 @@ const proteinasPorCategoria = {
     { id: 4, nombre: 'Tilapia' }, 
     { id: 5, nombre: 'Albacora' }, 
     { id: 6, nombre: 'Camarón' }
+  ],
+  4: [
+      { id: 7, nombre: 'Cuero' },
+      { id: 8, nombre: 'Pata' },
+      { id: 9, nombre: 'Queso' },
+      { id: 10, nombre: 'Hígado' },
+      { id: 11, nombre: 'Milanesa' }
   ]
 }
 

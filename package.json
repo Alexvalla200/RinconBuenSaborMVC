@@ -10,8 +10,8 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "mssql": "^12.7.14",
     "nuxt": "^4.6.4",
+    "pg": "^8.23.1",
     "vue": "^3.5.44",
     "vue-router": "^5.4.0"
   },
@@ -19,6 +19,7 @@
     "esbuild": true
   },
   "devDependencies": {
-    "@types/mssql": "^12.3.0"
+    "@types/mssql": "^12.3.0",
+    "@types/pg": "^8.23.1"
   }
 }
