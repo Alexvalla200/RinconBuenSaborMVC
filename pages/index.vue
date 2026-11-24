@@ -54,35 +54,37 @@
 
     <!-- ÁREA INFERIOR: Cuadro de Platos Registrados -->
     <div style="margin-top: 3rem; border: 2px solid #ef4444; padding: 1.5rem; border-radius: 8px; background: #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
-      <h3 style="margin-top: 0; color: #1f2937; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem;">Menú de Platos Registrados en el Sistema</h3>
-      
-      <div v-if="platosList.length === 0" style="color: #6b7280; text-align: center; padding: 2rem;">
-        No hay platos registrados todavía. ¡Agrega el primero arriba!
-      </div>
+  <h3 style="margin-top: 0; color: #1f2937; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem;">Menú de Platos Registrados en el Sistema</h3>
+  
+  <div v-if="platosList.length === 0" style="color: #6b7280; text-align: center; padding: 2rem;">
+    No hay platos registrados todavía. ¡Agrega el primero arriba!
+  </div>
 
-      <table v-else style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
-        <thead>
-          <tr style="background-color: #f3f4f6; text-align: left; border-bottom: 2px solid #d1d5db;">
-            <th style="padding: 0.75rem;">Plato</th>
-            <th style="padding: 0.75rem;">Tipo</th>
-            <th style="padding: 0.75rem;">Grupo</th>
-            <th style="padding: 0.75rem;">Proteína</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="plato in platosList" :key="plato.id" style="border-bottom: 1px solid #e5e7eb;">
-            <td style="padding: 0.75rem; font-weight: 500;">{{ plato.nombre }}</td>
-            <td style="padding: 0.75rem;">
-              <span :style="{ background: plato.tipo === 'Sopa' ? '#dbeafe' : '#fef3c7', color: plato.tipo === 'Sopa' ? '#1e40af' : '#92400e', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.85rem' }">
-                {{ plato.tipo }}
-              </span>
-            </td>
-            <td style="padding: 0.75rem;">{{ plato.categoria }}</td>
-            <td style="padding: 0.75rem; font-weight: 600; color: #2563eb;">{{ plato.proteina }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div v-else style="max-height: 360px; overflow-y: auto; margin-top: 1rem; border: 1px solid #e5e7eb; border-radius: 6px;">
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="background-color: #f3f4f6; text-align: left; border-bottom: 2px solid #d1d5db;">
+          <th style="padding: 0.75rem; position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">Plato</th>
+          <th style="padding: 0.75rem; position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">Tipo</th>
+          <th style="padding: 0.75rem; position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">Grupo</th>
+          <th style="padding: 0.75rem; position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">Proteína</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="plato in platosList" :key="plato.id" style="border-bottom: 1px solid #e5e7eb;">
+          <td style="padding: 0.75rem; font-weight: 500;">{{ plato.nombre }}</td>
+          <td style="padding: 0.75rem;">
+            <span :style="{ background: plato.tipo === 'Sopa' ? '#dbeafe' : '#fef3c7', color: plato.tipo === 'Sopa' ? '#1e40af' : '#92400e', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.85rem' }">
+              {{ plato.tipo }}
+            </span>
+          </td>
+          <td style="padding: 0.75rem;">{{ plato.categoria }}</td>
+          <td style="padding: 0.75rem; font-weight: 600; color: #2563eb;">{{ plato.proteina }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
   </div>
 </template>
 
